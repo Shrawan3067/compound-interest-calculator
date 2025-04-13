@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.querySelector(".ci-btn button").addEventListener("click", calculateInterest);
+
     document.getElementById("downloadExcel").addEventListener("click", function () {
         let table = document.querySelector("table");
         let ws = XLSX.utils.table_to_sheet(table);
@@ -192,15 +193,37 @@ document.addEventListener("DOMContentLoaded", function () {
             balance = (balance + deposit) * Math.pow(1 + rate / freq, freq / 12);
             const interest = balance - totalContribution;
 
-            table += `
-            <tr>
-                <td>${month}</td>
-                <td>$${(month === 1 ? deposit + annual + initial : deposit).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td>$${(interest - totalInterest).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td>$${totalContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td>$${interest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td>$${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>`;
+            if (month === 1) {
+                table += `
+                <tr>
+                    <td>${month}</td>
+                    <td>$${(deposit + annual + initial).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${(interest - totalInterest).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${totalContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${interest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                </tr>`;
+            } else if (month % 12 === 1) {
+                table += `
+                <tr>
+                    <td>${month}</td>
+                    <td>$${(deposit + annual).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${(interest - totalInterest).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${totalContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${interest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                </tr>`;
+            } else {
+                table += `
+                <tr>
+                    <td>${month}</td>
+                    <td>$${(deposit).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${(interest - totalInterest).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${totalContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${interest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td>$${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                </tr>`;
+            }
             totalInterest = interest;
         }
 
@@ -208,41 +231,41 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("periodLabel").innerText = "Month";
     }
 
-    calculateInterest(); // Run initially on load
-
-    // Function to initialize event listeners for live updates
     function initializeLiveUpdates() {
-    const inputIds = [
-        "initial", "annual", "monthly", "rate", "frequency",
-        "years", "months", "tax", "inflation"
-    ];
-
-    inputIds.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-        element.addEventListener("input", calculateInterest);
-        }
-    });
+        const inputIds = [
+            "initial", "annual", "monthly", "rate", "frequency",
+            "years", "months", "tax", "inflation"
+        ];
+        inputIds.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener("input", calculateInterest);
+            }
+        });
     }
 
-    // Call this function after the DOM has loaded
-    window.addEventListener("DOMContentLoaded", () => {
     initializeLiveUpdates();
-    calculateInterest(); // Initial calculation with default values
-    });
+    calculateInterest();
 
-    // Tab switching logic
-    document.getElementById("annualTab").addEventListener("click", function () {
-        currentTab = "annual";
-        this.classList.add("active-tab");
-        document.getElementById("monthlyTab").classList.remove("active-tab");
-        calculateInterest();
-    });
+    // Tab switching logic with fix for double tap highlight
+    const annualTab = document.getElementById("annualTab");
+    const monthlyTab = document.getElementById("monthlyTab");
 
-    document.getElementById("monthlyTab").addEventListener("click", function () {
-        currentTab = "monthly";
-        this.classList.add("active-tab");
-        document.getElementById("annualTab").classList.remove("active-tab");
+    function switchTab(tabName) {
+        currentTab = tabName;
+        annualTab.classList.toggle("active-tab", tabName === "annual");
+        monthlyTab.classList.toggle("active-tab", tabName === "monthly");
         calculateInterest();
+    }
+
+    annualTab.addEventListener("click", () => switchTab("annual"));
+    monthlyTab.addEventListener("click", () => switchTab("monthly"));
+
+    // FIX: Prevent double-tap highlight on mobile for tabs
+    [annualTab, monthlyTab].forEach(tab => {
+        tab.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            tab.click();
+        });
     });
 });
