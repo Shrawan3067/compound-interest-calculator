@@ -144,93 +144,137 @@ document.addEventListener("DOMContentLoaded", function () {
         const years = parseInt(document.getElementById("years").value) || 0;
         const months = parseInt(document.getElementById("months").value) || 0;
         const totalYears = years + months / 12;
-
+    
         let balance = initial;
         let table = "";
         let totalInterest = 0;
-        let totalContribution = initial;
-
+        let totalContribution = 0;
+    
+        // Year 0 row – only initial investment
+        table += `
+        <tr>
+            <td>0</td>
+            <td>$${initial.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>$${initial.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>-</td>
+            <td>-</td>
+            <td>$${initial.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+    
         for (let year = 1; year <= Math.floor(totalYears); year++) {
             const deposit = annual + monthly * 12;
             totalContribution += deposit;
             balance = (balance + deposit) * Math.pow(1 + rate / freq, freq);
-            const interest = balance - totalContribution;
-
+    
+            const totalInvested = initial + totalContribution;
+            const interest = balance - totalInvested;
+    
             table += `
             <tr>
                 <td>${year}</td>
-                <td>$${(year === 1 ? deposit + initial : deposit).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>$${deposit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>$${(initial + totalContribution).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td>$${(interest - totalInterest).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td>$${totalContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td>$${interest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td>$${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>`;
+    
             totalInterest = interest;
         }
-
+    
         document.getElementById("investmentTableBody").innerHTML = table;
         document.getElementById("periodLabel").innerText = "Year";
     }
+    
 
+    
     function generateMonthlyTable() {
         const initial = parseFloat(document.getElementById("initial").value) || 0;
         const annual = parseFloat(document.getElementById("annual").value) || 0;
         const monthly = parseFloat(document.getElementById("monthly").value) || 0;
         const rate = parseFloat(document.getElementById("rate").value) / 100 || 0;
-        const freq = parseInt(document.getElementById("frequency").value);
+        const freq = parseInt(document.getElementById("frequency").value) || 1;
         const years = parseInt(document.getElementById("years").value) || 0;
         const months = parseInt(document.getElementById("months").value) || 0;
         const totalMonths = years * 12 + months;
-
+    
         let balance = initial;
         let table = "";
         let totalInterest = 0;
-        let totalContribution = initial;
-
+        let totalContribution = 0;
+    
+        // Month 0 row – only initial investment
+        table += `
+        <tr>
+            <td>0</td>
+            <td>$${initial.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>$${initial.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>-</td>
+            <td>-</td>
+            <td>$${initial.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+    
         for (let month = 1; month <= totalMonths; month++) {
-            const deposit = monthly;
-            totalContribution += deposit;
-            balance = (balance + deposit) * Math.pow(1 + rate / freq, freq / 12);
-            const interest = balance - totalContribution;
+            let deposit = 0;
+            let contributionThisMonth = 0;
+
+            // Add monthly deposit
+            if (monthly > 0) {
+                deposit += monthly;
+                contributionThisMonth += monthly;
+            }
 
             if (month === 1) {
-                table += `
-                <tr>
-                    <td>${month}</td>
-                    <td>$${(deposit + annual + initial).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${(interest - totalInterest).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${totalContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${interest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                </tr>`;
-            } else if (month % 12 === 1) {
-                table += `
-                <tr>
-                    <td>${month}</td>
-                    <td>$${(deposit + annual).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${(interest - totalInterest).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${totalContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${interest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                </tr>`;
+                totalContribution = initial;
+            }
+    
+            // Annual contribution at start of each year
+            if (month % 12 === 1) {
+                deposit += annual;
+                totalContribution += deposit;
+            }
+    
+            // Update balance
+            balance += deposit;
+            totalContribution += contributionThisMonth;
+    
+            const monthlyInterest = balance * (rate / 12); // just for display
+           
+
+            if (month % Math.round(12 / freq) === 0) {
+                const effectiveRate = rate / freq;
+                const interestThisMonth = balance * effectiveRate;
+                totalInterest += monthlyInterest;
+                balance += interestThisMonth;
             } else {
+                totalInterest += monthlyInterest;
+            }
+
+            let endbalance = totalContribution + totalInterest;
+    
+            table += `
+            <tr>
+                <td>${month}</td>
+                <td>$${deposit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>$${totalContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>$${monthlyInterest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>$${totalInterest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>$${endbalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            </tr>`;
+    
+            if (month % 12 === 0) {
                 table += `
                 <tr>
-                    <td>${month}</td>
-                    <td>$${(deposit).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${(interest - totalInterest).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${totalContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${interest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td>$${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td colspan="6" style="text-align:center; font-weight:bold;">End of year ${month / 12}</td>
                 </tr>`;
             }
-            totalInterest = interest;
+            
         }
-
+    
         document.getElementById("investmentTableBody").innerHTML = table;
         document.getElementById("periodLabel").innerText = "Month";
     }
-
+    
     function initializeLiveUpdates() {
         const inputIds = [
             "initial", "annual", "monthly", "rate", "frequency",

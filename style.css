@@ -26,7 +26,7 @@ body {
     position: sticky;
     top: 0;
     color: black;
-    box-shadow: 0px 0px 5px 0.1px rgb(180, 180, 180);
+    box-shadow: 0px 0px 5px 1px rgb(210, 209, 209);
 }
 
 #logo {
@@ -146,6 +146,7 @@ body {
 .cic-container {
     display: flex;
     gap: 20px;
+    height: auto;
 }
 
 .ci-container {
@@ -160,7 +161,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 370px;
+    height: auto;
     background: #eee;
     border: 1px solid #bbbbbb;
     padding: 10px;
@@ -172,7 +173,6 @@ body {
 }
 
 .ci-container input {
-    width: 100px;
     border: 1px solid black;
     margin-bottom: 5px;
     font-size: 16px;
@@ -180,7 +180,7 @@ body {
 
 .ci-container select {
     padding: 5px;
-    width: 150px;
+    width: 170px;
     margin-bottom: 5px;
     border: 1px solid black;
 }
@@ -211,7 +211,13 @@ body {
     align-items: center;
     margin-bottom: 5px;
 }
-.input-group div {
+
+#input-group {
+    width: 170px;
+    gap: 5px;
+}
+
+#input-group div {
     border: 1px solid black;
     background-color: white;
 }
@@ -219,12 +225,13 @@ body {
 .input-group input {
     border: none;
     outline: none;
-    width: 40px;
+    width: 50px;
     text-align: left;
     font-size: 16px;
 }
 
 .input-group span {
+    margin-left: -20px;
     margin-right: 5px;
     font-size: 13px;
     color: gray;
@@ -245,7 +252,7 @@ body {
 .percent-group input {
     border: none;
     outline: none;
-    width: 130px;
+    width: 150px;
     text-align: left;
     display: flex;
     justify-content: center;
@@ -253,16 +260,32 @@ body {
     font-size: 16px;
 }
 
+.contribution {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0px 30px;
+    margin-bottom: 5px;
+}
+
+.contribution div {
+    display: flex;
+    gap: 5px;
+}
+
+.contribution #last-para {
+    margin-left: 30px;
+}
+
 .percent-group span {
     margin-left: 3px;
-    margin-right: 3px;
+    margin-right: 2px;
     font-size: 16px;
 }
 
 .cic-result {
     width: 60%;
     overflow: visible;
-    height: 590px;
+    height: auto;
 }
 
 .results {
@@ -289,8 +312,8 @@ canvas {
 }
 #pieChart {
     max-width: 340px;
-    max-height: 120px;
-    margin-top: 30px;
+    max-height: 140px;
+    margin-top: 20px;
 }
 .chartContainer {
     display: flex;
@@ -299,8 +322,8 @@ canvas {
 }
 #barChart {
     max-width: 400px;
-    max-height: 400px;
-    margin-top: 20px;
+    max-height: 300px;
+    margin-top: 10px;
 }
 table {
     margin: 5px 0px 20px 0px;
@@ -313,6 +336,7 @@ th, td {
     border: 1px solid #ddd;
     padding: 6px;
     text-align: center;
+    min-width: 90px;
 }
 
 th {
@@ -329,15 +353,16 @@ tbody tr:nth-child(odd) {
     background-color: white;
 }
 
+tbody tr:hover {
+    background-color: #555555;
+    color: white;
+}
+
 td {
     font-size: 16px;
     font-weight: 500;
-    color: #333;
 }
 
-th, td {
-    min-width: 90px;
-}
 #downloadExcel {
     padding: 5px 10px;
     border: 2px solid black;
@@ -475,6 +500,23 @@ th, td {
         font-weight: 500;
         gap: 5px;
     }
+    
+    .ci-container select {
+        width: 150px;
+    }
+    
+    .percent-group input {
+        width: 130px;
+    }
+    
+    .contribution {
+        margin: 0px 10px;
+    }
+    
+    .contribution div {
+        gap: 5px;
+    }
+    
 
     .cic-result {
         width: 100%;

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Discover how a compound interest calculator helps grow your savings and investments. Learn how to calculate compound interest and maximize your financial goals.">
     <meta name="keywords" content="Compound Interest Calculator, calculate compound interest, investment calculator, savings growth, interest calculator">
-    <link rel="icon" href="Icons/calz-logo.png">
+    <link rel="icon" href="calz-logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,7 @@
             </div>
             <div class="how_to_use">
                 <i class="fa-solid fa-circle-play fa-rotate-90"></i>
-                <p>Modify the values and click calculate button to use</p>
+                <p>Modify the values and get results instantly</p>
             </div>
             <div class="cic-container">
                 <div class="ci-container">
@@ -65,6 +65,17 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="contribution">
+                            <p>Contribution at the</p> 
+                            <div>
+                                <input type="radio" id="begining" name="contribution" checked>
+                                <label for="begining">beginning</label>
+                                <input type="radio" id="end" name="contribution">
+                                <label for="end">end</label>
+                            </div>
+                            <p id="last-para">of each compounding period</p>
+                        </div>
                 
                          <div class="percent-group">
                             Interest rate
@@ -76,21 +87,23 @@
                         <div>
                             <label>Compounding</label>
                             <select id="frequency">
-                                <option value="1">Yearly</option>
-                                <option value="4">Quarterly</option>
-                                <option value="12">Monthly</option>
-                                <option value="365">Daily</option>
+                                <option value="1">Yearly (1/yr)</option>
+                                <option value="4">Quarterly (4/yr)</option>
+                                <option value="12">Monthly (12/yr)</option>
+                                <option value="365">Daily (365/yr)</option>
                             </select>
                         </div>
                         <div class="input-group">
                         Investment length
-                            <div>
-                                <input value="5" id="years" style="padding-left: 3px;">
-                                <span>years</span>
-                            </div>
-                            <div>
-                                <input value="0" id="months" style="padding-left: 3px;">
-                                <span>months</span>
+                            <div id="input-group">
+                                <div>
+                                    <input value="5" id="years" style="padding-left: 3px;">
+                                    <span>years</span>
+                                </div>
+                                <div>
+                                    <input value="0" id="months" style="padding-left: 3px;">
+                                    <span>months</span>
+                                </div>
                             </div>
                         </div>
                         <div class="percent-group">
@@ -121,7 +134,7 @@
                         <b><p id="endingBalance"></p></b>
                     </div>
                     <div class="results">
-                        <p>Total Principal</p>
+                        <p>Total Deposit</p>
                         <p id="totalPrincipal"></p>
                     </div>
                     <div class="results">
@@ -163,8 +176,8 @@
                     <tr>
                       <th id="periodLabel">Year</th>
                       <th>Deposit</th>
+                      <th>Total Deposit</th>
                       <th>Interest</th>
-                      <th>Total Contributions</th>
                       <th>Total Interest</th>
                       <th>Ending Balance</th>
                     </tr>
