@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", function () {
     let barChart, pieChart;
     let currentTab = "annual";
 
+    // Add event listeners for contribution timing radio buttons
+    document.getElementById("begining").addEventListener("change", calculateInterest);
+    document.getElementById("end").addEventListener("change", calculateInterest);
+
     function calculateInterest() {
         // Get input values
         const initial = parseFloat(document.getElementById("initial").value) || 0;
@@ -14,6 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const years = parseInt(document.getElementById("years").value) || 0;
         const months = parseInt(document.getElementById("months").value) || 0;
         const taxRate = parseFloat(document.getElementById("tax").value) / 100 || 0;
+        const contributionTiming = document.querySelector('input[name="contribution"]:checked').id;
+        const contributeAtBeginning = contributionTiming === "begining";
         const totalMonths = years * 12 + months;
         const showTaxColumn = taxRate > 0;
 
@@ -27,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 { label: "Initial investment", data: [], backgroundColor: "rgb(43, 125, 219)" },
                 { label: "Contributions", data: [], backgroundColor: "rgb(139, 188, 33)" },
                 { label: "Interest", data: [], backgroundColor: "rgb(145, 0, 0)" },
-                { label: "Tax Paid", data: [], backgroundColor: "rgb(255, 0, 0)" }
+                { label: "Tax Paid", data: [], backgroundColor: "rgb(200, 100, 0)" }
             ]
         };
 
@@ -43,24 +49,23 @@ document.addEventListener("DOMContentLoaded", function () {
             let deposit = 0;
             let contributionThisMonth = 0;
 
-            // Add monthly contribution if any
-            if (monthly > 0) {
-                deposit += monthly;
-                contributionThisMonth += monthly;
+            // Calculate contributions for this period
+            if (contributeAtBeginning) {
+                // Add contributions at beginning of period
+                if (monthly > 0) {
+                    deposit += monthly;
+                    contributionThisMonth += monthly;
+                }
+                if (month % 12 === 1 || month === 1) {
+                    deposit += annual;
+                    contributionThisMonth += annual;
+                }
             }
 
-            // Add annual contribution at the beginning of each year
-            if (month % 12 === 1 || month === 1) {
-                deposit += annual;
-                contributionThisMonth += annual;
-            }
-
-            // Update total contributions
-            totalContribution += contributionThisMonth;
-
-            // Calculate interest for the period
-            const periodicRate = Math.pow(1 + (rate/freq), (freq * 1) / 12) - 1;
-            let interest = (balance + deposit) * periodicRate;
+            // Calculate interest for the period (on previous balance + current contributions if at beginning)
+            const periodicRate = Math.pow(1 + rate, 1 / (12 / freq)) - 1;
+            let interestBase = contributeAtBeginning ? balance + deposit : balance;
+            let interest = interestBase * periodicRate;
             
             // Calculate and deduct tax
             let tax = interest * taxRate;
@@ -69,6 +74,20 @@ document.addEventListener("DOMContentLoaded", function () {
             // Update totals
             totalInterest += netInterest;
             totalTaxPaid += tax;
+            
+            if (!contributeAtBeginning) {
+                // Add contributions at end of period
+                if (monthly > 0) {
+                    deposit += monthly;
+                    contributionThisMonth += monthly;
+                }
+                if (month % 12 === 1 || month === 1) {
+                    deposit += annual;
+                    contributionThisMonth += annual;
+                }
+            }
+            
+            totalContribution += contributionThisMonth;
             balance = totalContribution + totalInterest;
 
             // Store yearly data for charts
@@ -101,18 +120,16 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("totalInterest").innerText = formatCurrency(totalInterest+totalTaxPaid);
         document.getElementById("totalTax").innerText = formatCurrency(totalTaxPaid);
         document.getElementById("totalInterestAfterTax").innerText = formatCurrency(totalInterest);
-        document.getElementById("interestOfInitialInvestment").innerText = formatCurrency(initial * (Math.pow(1 + (rate/freq), years * freq) - 1));
-        document.getElementById("interestOfcontributions").innerText = formatCurrency(totalInterest - (initial * (Math.pow(1 + rate, years) - 1)));
-        
 
         // Generate appropriate table
         if (currentTab === "annual") {
             generateAnnualTable(yearlyData, showTaxColumn);
         } else {
-            generateMonthlyTable(showTaxColumn);
+            generateMonthlyTable(showTaxColumn, contributeAtBeginning);
         }
     }
 
+    // ... (rest of your existing functions remain the same)
     function updateTableHeaders(showTaxColumn) {
         const tableHead = document.querySelector("table thead tr");
         if (showTaxColumn) {
@@ -176,10 +193,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function updatePieChart(initial, contributions, interest, taxPaid = 0) {
         let total = initial + contributions + interest + taxPaid;
         let percentages = [
-            ((initial / total) * 100).toFixed(0),
-            ((contributions / total) * 100).toFixed(0),
-            ((interest / total) * 100).toFixed(0),
-            ((taxPaid / total) * 100).toFixed(0)
+            ((initial / total) * 100).toFixed(1),
+            ((contributions / total) * 100).toFixed(1),
+            ((interest / total) * 100).toFixed(1),
+            ((taxPaid / total) * 100).toFixed(1)
         ];
 
         pieChart.data.datasets[0].data = [initial, contributions, interest, taxPaid];
@@ -339,7 +356,7 @@ function generateMonthlyTable(showTaxColumn) {
                     "rgb(43, 125, 219)", 
                     "rgb(139, 188, 33)", 
                     "rgb(145, 0, 0)",
-                    "rgb(255, 0, 0)"
+                    "rgb(200, 100, 0)"
                 ],
                 hoverBackgroundColor: [
                     "#2B65EC", 
@@ -402,43 +419,11 @@ function generateMonthlyTable(showTaxColumn) {
         calculateInterest();
     }
 
-    function setupTabListeners() {
-        // For mouse/touch devices
-        const handleTabClick = (tabName) => {
-            switchTab(tabName);
-            return false; // Prevent default behavior
-        };
-    
-        annualTab.addEventListener("click", (e) => {
-            e.preventDefault();
-            handleTabClick("annual");
-        });
-    
-        monthlyTab.addEventListener("click", (e) => {
-            e.preventDefault();
-            handleTabClick("monthly");
-        });
-    
-        // Touch-specific events to prevent highlight/double-tap issues
-        annualTab.addEventListener("touchstart", (e) => {
-            e.preventDefault();
-            handleTabClick("annual");
-        }, { passive: false });
-    
-        monthlyTab.addEventListener("touchstart", (e) => {
-            e.preventDefault();
-            handleTabClick("monthly");
-        }, { passive: false });
-    }
-    
-    // Replace the existing tab switching code with this
-    setupTabListeners();
-    
-
     annualTab.addEventListener("click", () => switchTab("annual"));
     monthlyTab.addEventListener("click", () => switchTab("monthly"));
 
     // Initialize
     initializeLiveUpdates();
     calculateInterest();
-}); 
+
+});
