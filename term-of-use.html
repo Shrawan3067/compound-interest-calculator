@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover how a compound interest calculator helps grow your savings and investments. Learn how to calculate compound interest and maximize your financial goals.">
+    <meta name="keywords" content="Compound Interest Calculator, calculate compound interest, investment calculator, savings growth, interest calculator">
+    <link rel="icon" href="calz-logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <title>About Us | Compound Interest Calculator</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --light: #f8f9fa;
+            --dark: #333;
+        }
+        
+        h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin: 1rem 0px;
+        }
+        
+        h3 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin: 25px 0 10px;
+        }
+        
+        section {
+            margin-bottom: 40px;
+        }
+        
+        ul {
+            margin: 15px 0 15px 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+
+        ul li span {
+            font-weight: 550;
+        }
+        
+        .contact-info {
+            margin: 20px 0;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .emoji {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .legal-links {
+            margin-top: 20px;
+        }
+        
+        .legal-links a {
+            color: var(--primary);
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        
+        .legal-links a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .team-member {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="header">
+        <a href="index.html"><img src="calz-logo.png" alt="" id="logo-image"></a>
+        <p id="logo">Compound Interest Calculator</p>
+    </div>
+    
+    <div class="financial-container">
+        <div class="left-sidebar">
+        </div>
+        <div class="left-container">
+            <main>
+                <section>
+                    <h2>Terms of Use</h2>
+                    <h3>Acceptance of Terms</h3>
+                    <p>compoundinterestcalculator.live provides this website at [YourWebsiteURL] (referred to hereafter as "the Website") for use by consumers and businesses. By using the Website in any way, you are agreeing to comply with these Terms of Use. Should you object to any term or condition herein, your only recourse is to immediately discontinue use of the Website.</p>
+                    
+                    <h3>Changes to the Terms of Use</h3>
+                    <p>We reserve the right, at our sole discretion, to modify or update these Terms of Use at any time. Changes will take effect immediately upon posting. The most current version will be linked from the footer of the Website. You are responsible for reviewing these Terms periodically to stay informed of updates.</p>
+
+                    <h3>Conduct</h3>
+                    <p>You agree not to use the Website in any way that:</p>
+                    <ul>
+                        <li>Infringes on intellectual property rights (copyright, trademark, etc.);</li>
+                        <li>Violates any applicable laws or regulations;</li>
+                        <li>Harasses, threatens, or defames others;</li>
+                        <li>Contains harmful or deceptive content (viruses, malware, false information);</li>
+                        <li>Attempts to reverse-engineer, scrape, or exploit the Website for unauthorized commercial purposes.</li>
+                    </ul>
+                    <p>Unauthorized commercial use (e.g., reselling access, automated queries) is prohibited unless explicitly permitted by the Company.</p>
+
+                    <h3>Privacy</h3>
+                    <p>Your use of the Website is also governed by our Privacy Policy, which outlines how we collect, use, and protect your data.</p>
+
+                    <h3>Content & Accuracy</h3>
+                    <ul>
+                        <li>The Website provides financial calculations for informational purposes only and does not constitute professional advice.</li>
+                        <li>Results depend on user-inputted data and assumptions. We do not guarantee accuracy or completeness.</li>
+                        <li>Links to third-party sites are provided for convenience; we do not endorse or assume liability for their content.</li>
+                    </ul>
+
+                    <h3>Limitations & Termination</h3>
+                    <p>We may restrict or terminate your access to the Website at any time, without notice, for violations of these Terms or for any other reason.</p>
+
+                    <h3>Disclaimer of Warranties</h3>
+                    <p>THE WEBSITE AND ITS CALCULATIONS ARE PROVIDED "AS IS" WITHOUT WARRANTIES OF ACCURACY, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. USE AT YOUR OWN RISK.</p>
+
+                    <h3>Violation of Terms</h3>
+                    <p>Violations may result in termination of access or legal action, including injunctive relief where appropriate.</p>
+                </section>
+            </main>
+        </div>
+        <div class="right-sidebar">
+        </div>
+    </div>
+
+    
+
+    <footer class="footer">
+        <p id="explore">Want to 
+            explore more calculators? Please visit : <a href="#" id="mywebsite">calculators.live</a></p>
+        <div class="details">
+            <a href="aboutus.html" id="about">about us</a>|
+            <a href="term-of-use.html" id="termsofuse">terms of use</a>|
+            <a href="privacy.html" id="privacy">privacy policy</a>|
+            <p id="copyright">&copy; 2025</p>
+            <a href="index.html" id="privacy">compoundinterestcalculator.live</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
